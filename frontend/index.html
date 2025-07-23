@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hidden Struggles</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="assets/logo.svg">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <img src="assets/logo.svg" alt="Logo" class="logo">
+      <span>The Hidden Struggles</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#story-map">Story Map</a></li>
+      <li><a href="#action-corner">Action Corner</a></li>
+      <li><a href="#journal-wall">Journal Wall</a></li>
+      <li><a href="#" id="admin-tab">Admin</a></li>
+    </ul>
+  </nav>
+
+  <!-- Home Section -->
+  <section id="home" class="section home-section">
+    <div class="home-bg-pattern"></div>
+    <h1>It costs nothing to ignore Indigenous mental health, but the consequences are real.</h1>
+    <p class="intro">Welcome to The Hidden Struggles, a project dedicated to raising awareness about Indigenous mental health. Explore stories, take action, and share your voice anonymously.</p>
+  </section>
+
+  <!-- Story Map Section -->
+  <section id="story-map" class="section">
+    <h2>Story Map</h2>
+    <div id="map" class="story-map"></div>
+    <!-- Modal for full story -->
+    <div id="story-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3 id="modal-title"></h3>
+        <p id="modal-description"></p>
+        <div id="modal-full-story"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Action Corner Section -->
+  <section id="action-corner" class="section action-corner">
+    <h2>Action Corner</h2>
+    <div class="action-cards">
+      <div class="action-card">
+        <h3>Petitions</h3>
+        <ul>
+          <li><a href="#" target="_blank"># Petition 1 (dummy link)</a></li>
+          <li><a href="#" target="_blank"># Petition 2 (dummy link)</a></li>
+        </ul>
+      </div>
+      <div class="action-card">
+        <h3>Indigenous Spotify Playlists</h3>
+        <!-- Placeholder for embedded playlist -->
+        <div class="playlist-placeholder">[Spotify playlist embed here]</div>
+      </div>
+      <div class="action-card">
+        <h3>How to Get Involved</h3>
+        <ul>
+          <li>Attend local Indigenous events</li>
+          <li>Support Indigenous artists</li>
+          <li>Share resources on social media</li>
+        </ul>
+      </div>
+      <div class="action-card">
+        <h3>Indigenous Artwork</h3>
+        <div class="artwork-carousel">
+          <button class="carousel-btn left">&#8592;</button>
+          <div class="carousel-track">
+            <!-- Artwork images will be inserted here by JS -->
+          </div>
+          <button class="carousel-btn right">&#8594;</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Journal Wall Section -->
+  <section id="journal-wall" class="section journal-wall">
+    <h2>Journal Wall</h2>
+    <form id="journal-form">
+      <textarea name="text" id="journal-text" rows="3" placeholder="Share your thoughts anonymously..."></textarea>
+      <select name="tag" id="journal-tag">
+        <option value="">Select a tag (optional)</option>
+        <option value="Hope">Hope</option>
+        <option value="Struggle">Struggle</option>
+        <option value="Healing">Healing</option>
+        <option value="Pride">Pride</option>
+      </select>
+      <button type="submit">Submit</button>
+    </form>
+    <div class="moderation-note">Submissions are moderated before being displayed.</div>
+    <div id="journal-entries" class="journal-entries"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-social">
+        <!-- Placeholder social icons -->
+        <span class="icon-placeholder">[FB]</span>
+        <span class="icon-placeholder">[TW]</span>
+        <span class="icon-placeholder">[IG]</span>
+      </div>
+      <div class="footer-contact">
+        <span>Email: contact@hiddenstruggles.org (placeholder)</span>
+      </div>
+      <div class="footer-credit">
+        &copy; 2025 The Hidden Struggles Project<br>
+        With thanks to Indigenous youth and artists who inspire this work.
+      </div>
+    </div>
+  </footer>
+
+  <div id="admin-modal" class="modal hidden">
+    <div class="modal-content" style="max-width:420px;">
+      <span class="close-btn" id="admin-close">&times;</span>
+      <div id="admin-login" class="admin-login">
+        <h2>Admin Login</h2>
+        <input type="text" id="admin-user" placeholder="Username">
+        <input type="password" id="admin-pass" placeholder="Password">
+        <button id="login-btn">Login</button>
+        <div id="login-error" style="color:#e53935; margin-top:0.7rem; display:none;">Invalid credentials</div>
+      </div>
+      <div id="admin-panel" class="admin-panel" style="display:none;">
+        <h2>Moderate Journal Entries</h2>
+        <div class="pending-list" id="pending-list"></div>
+        <div class="admin-logout"><button id="logout-btn">Logout</button></div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script>
+    // Admin modal logic
+    const adminTab = document.getElementById('admin-tab');
+    const adminModal = document.getElementById('admin-modal');
+    const adminClose = document.getElementById('admin-close');
+    adminTab.onclick = () => { adminModal.classList.remove('hidden'); };
+    adminClose.onclick = () => { adminModal.classList.add('hidden'); };
+    window.onclick = e => { if (e.target === adminModal) adminModal.classList.add('hidden'); };
+
+    // Hardcoded credentials
+    const ADMIN_USER = 'admin';
+    const ADMIN_PASS = 'hidden2024';
+    const loginDiv = document.getElementById('admin-login');
+    const panelDiv = document.getElementById('admin-panel');
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const loginError = document.getElementById('login-error');
+    let authed = false;
+    loginBtn.onclick = function() {
+      const user = document.getElementById('admin-user').value;
+      const pass = document.getElementById('admin-pass').value;
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        authed = true;
+        loginDiv.style.display = 'none';
+        panelDiv.style.display = 'block';
+        loadPending();
+      } else {
+        loginError.style.display = 'block';
+      }
+    };
+    logoutBtn.onclick = function() {
+      authed = false;
+      loginDiv.style.display = 'block';
+      panelDiv.style.display = 'none';
+      document.getElementById('admin-user').value = '';
+      document.getElementById('admin-pass').value = '';
+      loginError.style.display = 'none';
+    };
+    async function loadPending() {
+      const list = document.getElementById('pending-list');
+      list.innerHTML = 'Loading...';
+      try {
+        const res = await fetch('/api/journal/pending');
+        const entries = await res.json();
+        if (!entries.length) {
+          list.innerHTML = '<div>No pending entries.</div>';
+          return;
+        }
+        list.innerHTML = '';
+        entries.forEach(entry => {
+          const card = document.createElement('div');
+          card.className = 'pending-card';
+          card.innerHTML = `<div><b>${entry.text}</b>${entry.tag ? `<span class='tag'>${entry.tag}</span>` : ''}</div><div style='margin-top:0.7rem;'><button class='approve'>Approve</button><button class='reject'>Reject</button></div>`;
+          card.querySelector('.approve').onclick = async () => {
+            await fetch(`/api/journal/${entry._id}/approve`, { method: 'PATCH' });
+            loadPending();
+          };
+          card.querySelector('.reject').onclick = async () => {
+            await fetch(`/api/journal/${entry._id}`, { method: 'DELETE' });
+            loadPending();
+          };
+          list.appendChild(card);
+        });
+      } catch (err) {
+        list.innerHTML = '<div style="color:#e53935;">Failed to load pending entries.</div>';
+      }
+    }
+  </script>
+</body>
+</html> 

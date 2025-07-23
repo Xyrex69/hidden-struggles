@@ -1,0 +1,16 @@
+{
+  "name": "the-hidden-struggles",
+  "version": "1.0.0",
+  "description": "A full-stack website to raise awareness about Indigenous mental health.",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.6.1",
+    "cors": "^2.8.5"
+  }
+} 
