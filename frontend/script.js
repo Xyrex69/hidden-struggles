@@ -86,15 +86,31 @@ journalForm.onsubmit = async e => {
   e.preventDefault();
   const text = document.getElementById('journal-text').value.trim();
   const tag = document.getElementById('journal-tag').value;
+  const confirmation = document.getElementById('journal-confirmation');
+
   if (!text) return;
+
   try {
     await fetch('http://localhost:5000/api/journal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, tag })
     });
+
+    // ✅ Show confirmation
+    confirmation.classList.remove('hidden');
+
+    // ✅ Reset form
     journalForm.reset();
+
+    // ✅ Optionally hide after 4s
+    setTimeout(() => {
+      confirmation.classList.add('hidden');
+    }, 4000);
+
+    // ✅ Refresh entries
     fetchEntries();
+
   } catch (err) {
     alert('Failed to submit. Try again.');
     console.error('Failed to submit journal entry:', err);
