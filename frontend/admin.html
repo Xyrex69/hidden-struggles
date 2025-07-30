@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8" />
@@ -8,86 +9,91 @@
   <link rel="icon" href="assets/logo.svg">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="admin.css" />
 </head>
+
 <body>
-<button class="back-button" onclick="window.location.href='index.html';">&lt; Back</button>
+  <button class="back-button" onclick="window.location.href='index.html';">&lt; Back</button>
 
-<div class="login-card" id="admin-login-card">
-  <h2>Admin Login</h2>
-  <input id="admin-username" placeholder="Admin Username" type="text" />
-  <div class="password-wrapper">
-    <input id="admin-password" type="password" placeholder="Password" />
-    <span class="toggle-password" onclick="togglePassword('admin-password', this)">
-    </span>
-  </div>
-  <button onclick="adminLogin()">Login</button>
-  <div class="message" id="admin-message"></div>
-</div>
-
-<!-- Admin Console -->
-<div class="admin-container hidden" id="admin-console">
-  <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
-  
-  <div class="admin-header">
-    <h1>Admin Console</h1>
-    <p>Manage and moderate journal entries</p>
+  <div class="login-card" id="admin-login-card">
+    <h2>Admin Login</h2>
+    <input id="admin-username" placeholder="Admin Username" type="text" />
+    <div class="password-wrapper">
+      <input id="admin-password" type="password" placeholder="Password" />
+      <span class="toggle-password" onclick="togglePassword('admin-password', this)">
+      </span>
+    </div>
+    <button onclick="adminLogin()">Login</button>
+    <div class="message" id="admin-message"></div>
   </div>
 
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-number" id="pending-count">0</div>
-      <div class="stat-label">Pending Entries</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number" id="approved-count">0</div>
-      <div class="stat-label">Approved Entries</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number" id="total-count">0</div>
-      <div class="stat-label">Total Entries</div>
-    </div>
-  </div>
+  <!-- Admin Console -->
+  <div class="admin-container hidden" id="admin-console">
+    <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
 
-  <div class="admin-content">
-    <!-- Pending Entries -->
-    <div class="section-card">
-      <div class="section-header">
-        📋 Pending Entries
+    <div class="admin-header">
+      <h1>Admin Console</h1>
+      <p>Manage and moderate journal entries</p>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-number" id="pending-count">0</div>
+        <div class="stat-label">Pending Entries</div>
       </div>
-      <div class="section-content" id="pending-content">
-        <div class="empty-state" id="pending-empty">
-          <svg fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-          </svg>
-          <p>No pending entries</p>
+      <div class="stat-item">
+        <div class="stat-number" id="approved-count">0</div>
+        <div class="stat-label">Approved Entries</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="total-count">0</div>
+        <div class="stat-label">Total Entries</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <!-- Pending Entries -->
+      <div class="section-card">
+        <div class="section-header">
+          Pending Entries
         </div>
-        <div id="pending-list"></div>
-      </div>
-    </div>
-
-    <!-- Approved Entries -->
-    <div class="section-card">
-      <div class="section-header">
-        ✅ Approved Entries
-      </div>
-      <div class="section-content" id="approved-content">
-        <div class="empty-state" id="approved-empty">
-          <svg fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-          </svg>
-          <p>No approved entries</p>
+        <div class="section-content" id="pending-content">
+          <div class="empty-state" id="pending-empty">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <p>No pending entries</p>
+          </div>
+          <div id="pending-list"></div>
         </div>
-        <div id="approved-list"></div>
+      </div>
+
+      <!-- Approved Entries -->
+      <div class="section-card">
+        <div class="section-header">
+          Approved Entries
+        </div>
+        <div class="section-content" id="approved-content">
+          <div class="empty-state" id="approved-empty">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <p>No approved entries</p>
+          </div>
+          <div id="approved-list"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  const adminUser = { username: "admin", password: "hidden2024" };
+  <script>
+    const adminUser = { username: "admin", password: "hidden2024" };
 
-  const eyeIcon = `
+    const eyeIcon = `
       <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -95,72 +101,73 @@
           d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
       </svg>`;
 
-  const eyeOffIcon = `
+    const eyeOffIcon = `
       <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.04 10.04 0 012.873-4.568M6.18 6.18a10.05 10.05 0 015.82-1.18c4.478 0 8.268 2.943 9.542 7a10.051 10.051 0 01-4.623 5.592M3 3l18 18"/>
       </svg>`;
 
-  // set initial eye icon
-  document.querySelector('.toggle-password').innerHTML = eyeOffIcon;
+    // set initial eye icon
+    document.querySelector('.toggle-password').innerHTML = eyeOffIcon;
 
-  function togglePassword(id, iconSpan) {
-    const input = document.getElementById(id);
-    const isHidden = input.type === "password";
+    function togglePassword(id, iconSpan) {
+      const input = document.getElementById(id);
+      const isHidden = input.type === "password";
 
-    input.type = isHidden ? "text" : "password";
-    iconSpan.innerHTML = isHidden ? eyeIcon : eyeOffIcon;
-  }
-
-  function adminLogin() {
-    const user = document.getElementById("admin-username").value.trim();
-    const pass = document.getElementById("admin-password").value.trim();
-    const message = document.getElementById("admin-message");
-
-    if (!user || !pass) {
-      message.textContent = "Please enter both fields.";
-      message.className = "message error";
-      return;
+      input.type = isHidden ? "text" : "password";
+      iconSpan.innerHTML = isHidden ? eyeIcon : eyeOffIcon;
     }
 
-    if (user === adminUser.username && pass === adminUser.password) {
-      message.textContent = "Admin login successful!";
-      message.className = "message success";
-      localStorage.setItem("adminLoggedIn", "true");
+    function adminLogin() {
+      const user = document.getElementById("admin-username").value.trim();
+      const pass = document.getElementById("admin-password").value.trim();
+      const message = document.getElementById("admin-message");
 
-      setTimeout(() => {
+      if (!user || !pass) {
+        message.textContent = "Please enter both fields.";
+        message.className = "message error";
+        return;
+      }
+
+      if (user === adminUser.username && pass === adminUser.password) {
+        message.textContent = "Admin login successful!";
+        message.className = "message success";
+        localStorage.setItem("adminLoggedIn", "true");
+
+        setTimeout(() => {
+          document.getElementById("admin-login-card").classList.add("hidden");
+          document.getElementById("admin-console").classList.remove("hidden");
+        }, 1000);
+      } else {
+        message.textContent = "Invalid admin credentials.";
+        message.className = "message error";
+      }
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem("adminLoggedIn");
+      document.getElementById("admin-console").classList.add("hidden");
+      document.getElementById("admin-login-card").classList.remove("hidden");
+    }
+
+    document.getElementById("admin-username").addEventListener("keydown", function (event) {
+      if (event.key === "Enter") adminLogin();
+    });
+
+    document.getElementById("admin-password").addEventListener("keydown", function (event) {
+      if (event.key === "Enter") adminLogin();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem("adminLoggedIn") === "true") {
         document.getElementById("admin-login-card").classList.add("hidden");
         document.getElementById("admin-console").classList.remove("hidden");
-      }, 1000);
-    } else {
-      message.textContent = "Invalid admin credentials.";
-      message.className = "message error";
-    }
-  }
-
-  function logoutAdmin() {
-    localStorage.removeItem("adminLoggedIn");
-    document.getElementById("admin-console").classList.add("hidden");
-    document.getElementById("admin-login-card").classList.remove("hidden");
-  }
-
-  document.getElementById("admin-username").addEventListener("keydown", function(event) {
-    if (event.key === "Enter") adminLogin();
-  });
-
-  document.getElementById("admin-password").addEventListener("keydown", function(event) {
-    if (event.key === "Enter") adminLogin();
-  });
-
-  document.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem("adminLoggedIn") === "true") {
-      document.getElementById("admin-login-card").classList.add("hidden");
-      document.getElementById("admin-console").classList.remove("hidden");
-    } else {
-      document.getElementById("admin-login-card").classList.remove("hidden");
-      document.getElementById("admin-console").classList.add("hidden");
-    }
-  });
-</script>
+      } else {
+        document.getElementById("admin-login-card").classList.remove("hidden");
+        document.getElementById("admin-console").classList.add("hidden");
+      }
+    });
+  </script>
 </body>
+
 </html>
