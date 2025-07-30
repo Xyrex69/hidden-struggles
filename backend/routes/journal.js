@@ -30,11 +30,20 @@ router.patch('/:id', async (req, res) => {
     if (!['approved', 'denied'].includes(status)) {
       return res.status(400).json({ error: 'Invalid status' });
     }
+
+    let update = {};
+    if (status === 'approved') {
+      update.approved = true;
+    } else if (status === 'denied') {
+      update.approved = false; // or handle deletion in another route
+    }
+
     const entry = await JournalEntry.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
+        req.params.id,
+        update,
+        { new: true }
     );
+
     if (!entry) return res.status(404).json({ error: 'Entry not found' });
     res.json(entry);
   } catch (err) {
@@ -65,5 +74,18 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+router.get('/all', async (req, res) => {
+  try {
+    const entries = await JournalEntry.find().exec();
+    res.json(entries);
+  } catch (error) {
+    console.error('Failed to fetch all journal entries:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
 
 module.exports = router;

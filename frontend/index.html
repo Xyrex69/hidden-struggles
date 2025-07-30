@@ -21,7 +21,7 @@
       <li><a href="#story-map">Story Map</a></li>
       <li><a href="#action-corner">Action Corner</a></li>
       <li><a href="#journal-wall">Journal Wall</a></li>
-      <li><a href="#" id="admin-tab">Admin</a></li>
+      <li><a href="admin.html" id="admin-tab">Admin</a></li>
     </ul>
   </nav>
 
@@ -122,69 +122,8 @@
     </div>
   </footer>
 
-  <div id="admin-modal" class="modal hidden">
-    <div class="modal-content" style="max-width:420px;">
-      <span class="close-btn" id="admin-close">&times;</span>
-      <div id="admin-login" class="admin-login">
-        <h2>Admin Login</h2>
-        <input type="text" id="admin-user" placeholder="Username">
-        <input type="password" id="admin-pass" placeholder="Password">
-        <button id="login-btn">Login</button>
-        <div id="login-error" style="color:#e53935; margin-top:0.7rem; display:none;">Invalid credentials</div>
-      </div>
-      <div id="admin-panel" class="admin-panel" style="display:none;">
-        <h2>Moderate Journal Entries</h2>
-        <div class="pending-list" id="pending-list"></div>
-        <div class="admin-logout"><button id="logout-btn">Logout</button></div>
-      </div>
-    </div>
-  </div>
   <script src="script.js"></script>
   <script>
-    // Admin modal logic
-    const adminTab = document.getElementById('admin-tab');
-    const adminModal = document.getElementById('admin-modal');
-    const adminClose = document.getElementById('admin-close');
-    adminTab.onclick = () => {
-      adminModal.classList.remove('hidden');
-    };
-    adminClose.onclick = () => {
-      adminModal.classList.add('hidden');
-    };
-    window.onclick = e => {
-      if (e.target === adminModal) adminModal.classList.add('hidden');
-    };
-
-    // Hardcoded credentials
-    const ADMIN_USER = 'admin';
-    const ADMIN_PASS = 'hidden2024';
-    const loginDiv = document.getElementById('admin-login');
-    const panelDiv = document.getElementById('admin-panel');
-    const loginBtn = document.getElementById('login-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const loginError = document.getElementById('login-error');
-    let authed = false;
-    loginBtn.onclick = function () {
-      const user = document.getElementById('admin-user').value;
-      const pass = document.getElementById('admin-pass').value;
-      if (user === ADMIN_USER && pass === ADMIN_PASS) {
-        authed = true;
-        loginDiv.style.display = 'none';
-        panelDiv.style.display = 'block';
-        loadPending();
-      } else {
-        loginError.style.display = 'block';
-      }
-    };
-    logoutBtn.onclick = function () {
-      authed = false;
-      loginDiv.style.display = 'block';
-      panelDiv.style.display = 'none';
-      document.getElementById('admin-user').value = '';
-      document.getElementById('admin-pass').value = '';
-      loginError.style.display = 'none';
-    };
-
     async function loadPending() {
       const list = document.getElementById('pending-list');
       list.innerHTML = 'Loading...';

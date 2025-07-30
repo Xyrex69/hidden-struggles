@@ -1,12 +1,257 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Mod Panel</title>
-  <script defer src="admin.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Admin Console</title>
+  <script src="admin.js"></script>
+  <link rel="icon" href="assets/logo.svg">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --primary: #7c3aed; /* Purple */
+      --primary-dark: #5b21b6;
+      --accent: #c084fc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f3e8ff, #fff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 320px;
+      text-align: center;
+    }
+
+    .login-card h2 {
+      margin-bottom: 25px;
+      font-size: 24px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 30%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: var(--primary-dark);
+    }
+
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .error {
+      color: #af0009;
+    }
+
+    .success {
+      color: #0d9800;
+    }
+
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-wrapper input {
+      flex: 1;
+      padding-right: 40px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .eye-icon {
+      width: 24px;
+      height: 24px;
+      stroke: #444;
+    }
+
+    .back-button {
+      max-width: 100px;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 18px;
+      padding: 8px 16px;
+      background-color: transparent;
+      color: #818080;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .back-button:hover {
+      color: #535353;
+      background-color: transparent;
+      transform: scale(1.07);
+    }
+    .hidden {
+      display: none;
+    }
+
+  </style>
 </head>
 <body>
-  <h1>Pending Entries</h1>
-  <ul id="pending-list"></ul>
+<button class="back-button" onclick="window.location.href='index.html';">&lt; Back</button>
+<div class="login-card" id="admin-login-card">
+  <h2>Admin Login</h2>
+  <input id="admin-username" placeholder="Admin Username" type="text" />
+  <div class="password-wrapper">
+    <input id="admin-password" type="password" placeholder="Password" />
+    <span class="toggle-password" onclick="togglePassword('admin-password', this)">
+    </span>
+  </div>
+  <button onclick="adminLogin()">Login</button>
+  <div class="message" id="admin-message"></div>
+</div>
+
+<!-- Admin Console -->
+<div class="login-card hidden" id="admin-console" style="width: 600px; max-height: 85%; overflow-y: auto;">
+  <h2>Admin Console</h2>
+  <p>Welcome, Admin!</p>
+  <!-- Pending Entries -->
+  <section>
+    <h3 style="text-align: left">Pending Entries</h3>
+    <ul id="pending-list"></ul>
+  </section>
+
+  <!-- Approved Entries -->
+  <section style="margin-top: 2rem;">
+    <h3 style="text-align: left">Approved Entries</h3>
+    <ul id="approved-list"></ul>
+  </section>
+
+  <button onclick="logoutAdmin()" style="margin-top: 2rem; width:100%;">Logout</button>
+</div>
+
+<script>
+  const adminUser = { username: "admin", password: "hidden2024" };
+
+  const eyeIcon = `
+      <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+      </svg>`;
+
+  const eyeOffIcon = `
+      <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.04 10.04 0 012.873-4.568M6.18 6.18a10.05 10.05 0 015.82-1.18c4.478 0 8.268 2.943 9.542 7a10.051 10.051 0 01-4.623 5.592M3 3l18 18"/>
+      </svg>`;
+
+  // set initial eye icon
+  document.querySelector('.toggle-password').innerHTML = eyeOffIcon;
+
+  function togglePassword(id, iconSpan) {
+    const input = document.getElementById(id);
+    const isHidden = input.type === "password";
+
+    input.type = isHidden ? "text" : "password";
+    iconSpan.innerHTML = isHidden ? eyeIcon : eyeOffIcon;
+  }
+
+  function adminLogin() {
+    const user = document.getElementById("admin-username").value.trim();
+    const pass = document.getElementById("admin-password").value.trim();
+    const message = document.getElementById("admin-message");
+
+    if (!user || !pass) {
+      message.textContent = "Please enter both fields.";
+      message.className = "message error";
+      return;
+    }
+
+    if (user === adminUser.username && pass === adminUser.password) {
+      message.textContent = "Admin login successful!";
+      message.className = "message success";
+      localStorage.setItem("adminLoggedIn", "true");
+
+      setTimeout(() => {
+        document.getElementById("admin-login-card").classList.add("hidden");
+        document.getElementById("admin-console").classList.remove("hidden");
+      }, 1000);
+    } else {
+      message.textContent = "Invalid admin credentials.";
+      message.className = "message error";
+    }
+  }
+
+  function logoutAdmin() {
+    localStorage.removeItem("adminLoggedIn");
+    document.getElementById("admin-console").classList.add("hidden");
+    document.getElementById("admin-login-card").classList.remove("hidden");
+  }
+
+
+  document.getElementById("admin-username").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") adminLogin();
+  });
+
+  document.getElementById("admin-password").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") adminLogin();
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem("adminLoggedIn") === "true") {
+      document.getElementById("admin-login-card").classList.add("hidden");
+      document.getElementById("admin-console").classList.remove("hidden");
+    } else {
+      document.getElementById("admin-login-card").classList.remove("hidden");
+      document.getElementById("admin-console").classList.add("hidden");
+    }
+  });
+
+
+</script>
 </body>
-</html> 
+</html>
