@@ -1,6 +1,3 @@
-// JournalEntry.js - Mongoose schema for journal entries
-// Used in The Hidden Struggles project
-
 const mongoose = require('mongoose');
 
 const JournalEntrySchema = new mongoose.Schema({

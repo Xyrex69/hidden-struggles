@@ -11,18 +11,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Log all requests
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
 
-// MOUNT YOUR API ROUTES HERE!
 app.use('/api/journal', journalRoutes);
 
-// Serve everything in frontend/ as static files
 app.use(express.static(path.join(__dirname, '../frontend')));
-// For any other route, send back index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });

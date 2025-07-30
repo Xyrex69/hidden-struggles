@@ -3,7 +3,6 @@ const express = require('express');
 const router  = express.Router();
 const JournalEntry = require('../models/JournalEntry');
 
-// GET /api/journal - Retrieve all approved entries (most recent first)
 router.get('/', async (req, res) => {
   try {
     const entries = await JournalEntry.find({ approved: true }).sort({ timestamp: -1 });
@@ -13,7 +12,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/journal/pending - Retrieve all pending (unapproved) entries
 router.get('/pending', async (req, res) => {
   try {
     const pending = await JournalEntry.find({ approved: false });
@@ -23,7 +21,6 @@ router.get('/pending', async (req, res) => {
   }
 });
 
-// PATCH /api/journal/:id - Approve or deny a journal entry
 router.patch('/:id', async (req, res) => {
   try {
     const { status } = req.body;
@@ -51,7 +48,6 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/journal/:id - Permanently delete a journal entry
 router.delete('/:id', async (req, res) => {
   try {
     const result = await JournalEntry.findByIdAndDelete(req.params.id);
@@ -62,7 +58,6 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// POST a new entry
 router.post('/', async (req, res) => {
   const { text, tag } = req.body;
   if (!text) return res.status(400).json({ error: 'Text is required' });
@@ -84,8 +79,5 @@ router.get('/all', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
-
 
 module.exports = router;
