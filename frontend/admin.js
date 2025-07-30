@@ -1,28 +1,51 @@
 document.addEventListener('DOMContentLoaded', () => {
   const pendingList = document.getElementById('pending-list');
   const approvedList = document.getElementById('approved-list');
+  const pendingEmpty = document.getElementById('pending-empty');
+  const approvedEmpty = document.getElementById('approved-empty');
 
   async function loadEntries() {
     pendingList.innerHTML = '';
     approvedList.innerHTML = '';
+    
+    // Show empty states initially
+    pendingEmpty.style.display = 'block';
+    approvedEmpty.style.display = 'block';
 
     try {
       const res = await fetch('/api/journal/all');
       const entries = await res.json();
 
+      let pendingCount = 0;
+      let approvedCount = 0;
+
       entries.forEach(entry => {
         const card = document.createElement('div');
-        card.className = 'pending-card';
-        card.innerHTML = `
-          <br><div>
-            <b>${entry.text}</b>
-            ${entry.tag ? `<span class='tag'>${entry.tag}</span>` : ''}
-          </div>
-        `;
+        card.className = 'entry-card';
+        
+        const textDiv = document.createElement('div');
+        textDiv.className = 'entry-text';
+        textDiv.textContent = entry.text;
+        card.appendChild(textDiv);
+
+        if (entry.tag) {
+          const tagSpan = document.createElement('span');
+          tagSpan.className = 'entry-tag';
+          tagSpan.textContent = entry.tag;
+          card.appendChild(tagSpan);
+        }
 
         if (entry.approved) {
+          approvedCount++;
+          // Hide empty state when we have approved entries
+          approvedEmpty.style.display = 'none';
+          
           // Approved card layout
+          const actionsDiv = document.createElement('div');
+          actionsDiv.className = 'entry-actions';
+          
           const delBtn = document.createElement('button');
+          delBtn.className = 'btn-delete';
           delBtn.textContent = 'Delete';
           delBtn.onclick = async () => {
             try {
@@ -44,15 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
               alert('Error deleting entry: ' + error.message);
             }
           };
-          card.appendChild(delBtn);
+          
+          actionsDiv.appendChild(delBtn);
+          card.appendChild(actionsDiv);
           approvedList.appendChild(card);
         } else {
+          pendingCount++;
+          // Hide empty state when we have pending entries
+          pendingEmpty.style.display = 'none';
+          
           // Pending card layout
-          const buttonContainer = document.createElement('div');
-          buttonContainer.style.marginTop = '0.7rem';
+          const actionsDiv = document.createElement('div');
+          actionsDiv.className = 'entry-actions';
 
           const approveBtn = document.createElement('button');
-          approveBtn.className = 'approve';
+          approveBtn.className = 'btn-approve';
           approveBtn.textContent = 'Approve';
           approveBtn.onclick = async () => {
             try {
@@ -80,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
           };
 
           const rejectBtn = document.createElement('button');
-          rejectBtn.className = 'reject';
+          rejectBtn.className = 'btn-reject';
           rejectBtn.textContent = 'Reject';
           rejectBtn.onclick = async () => {
             try {
@@ -103,15 +132,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           };
 
-          buttonContainer.appendChild(approveBtn);
-          buttonContainer.appendChild(rejectBtn);
-          card.appendChild(buttonContainer);
+          actionsDiv.appendChild(approveBtn);
+          actionsDiv.appendChild(rejectBtn);
+          card.appendChild(actionsDiv);
           pendingList.appendChild(card);
         }
       });
+
+      // Update statistics
+      document.getElementById('pending-count').textContent = pendingCount;
+      document.getElementById('approved-count').textContent = approvedCount;
+      document.getElementById('total-count').textContent = entries.length;
+
     } catch (err) {
       console.error('Failed to load entries:', err);
-      pendingList.innerHTML = '<div style="color:#e53935;">Failed to load pending entries.</div>';
+      pendingList.innerHTML = '<div style="color: #ef4444; text-align: center; padding: 20px;">Failed to load entries. Please try again.</div>';
+      approvedList.innerHTML = '<div style="color: #ef4444; text-align: center; padding: 20px;">Failed to load entries. Please try again.</div>';
     }
   }
 

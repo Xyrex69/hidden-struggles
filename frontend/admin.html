@@ -10,9 +10,21 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
-      --primary: #7c3aed; /* Purple */
+      --primary: #7c3aed;
       --primary-dark: #5b21b6;
+      --primary-light: #a855f7;
       --accent: #c084fc;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
     }
 
     * {
@@ -22,11 +34,9 @@
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #f3e8ff, #fff);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
+      min-height: 100vh;
+      color: var(--gray-800);
     }
 
     .login-card {
@@ -36,20 +46,32 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       width: 320px;
       text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     .login-card h2 {
       margin-bottom: 25px;
       font-size: 24px;
+      color: var(--primary);
+      font-weight: 600;
     }
 
     input[type="text"], input[type="password"] {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
-      border: 1px solid #ccc;
+      border: 2px solid var(--gray-200);
       border-radius: 12px;
       font-size: 15px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: var(--primary);
     }
 
     button {
@@ -62,12 +84,14 @@
       font-size: 16px;
       margin-top: 10px;
       cursor: pointer;
-      transition: transform 0.3s ease, background-color 0.3s ease;
+      transition: all 0.3s ease;
+      font-weight: 500;
     }
 
     button:hover {
-      transform: scale(1.05);
+      transform: translateY(-2px);
       background: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
     }
 
     .message {
@@ -77,11 +101,11 @@
     }
 
     .error {
-      color: #af0009;
+      color: var(--danger);
     }
 
     .success {
-      color: #0d9800;
+      color: var(--success);
     }
 
     .password-wrapper {
@@ -116,31 +140,294 @@
     .back-button {
       max-width: 100px;
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 20px;
+      left: 20px;
       font-size: 18px;
       padding: 8px 16px;
       background-color: transparent;
-      color: #818080;
+      color: var(--gray-600);
       border: none;
       border-radius: 5px;
       cursor: pointer;
       text-align: center;
+      transition: all 0.3s ease;
     }
 
     .back-button:hover {
-      color: #535353;
+      color: var(--gray-800);
+      border: none;
       background-color: transparent;
-      transform: scale(1.07);
+      box-shadow: none;
+      transform: scale(1.05);
     }
+
     .hidden {
       display: none;
     }
 
+     Admin Console Styles
+    .admin-container {
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #f3e8ff, #fff);
+    }
+
+    .admin-header {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .admin-header h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+    }
+
+    .admin-header p {
+      color: var(--gray-600);
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .admin-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .section-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      padding: 20px 25px;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .section-content {
+      padding: 25px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .entry-card {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .entry-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+    }
+
+    .entry-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--gray-800);
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .entry-tag {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 15px;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-approve {
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-approve:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+
+    .btn-reject {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-reject:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+    }
+
+    .btn-delete {
+      background: var(--gray-600);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-delete:hover {
+      background: var(--gray-700);
+      transform: translateY(-1px);
+    }
+
+    .logout-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray-600);
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      margin-top: 5px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .admin-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .admin-header h1 {
+        font-size: 2rem;
+      }
+
+      .stats-bar {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .section-content {
+        max-height: 400px;
+      }
+    }
+
+    /* Custom Scrollbar */
+    .section-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .section-content::-webkit-scrollbar-track {
+      background: var(--gray-100);
+      border-radius: 4px;
+    }
+
+    .section-content::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    .section-content::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
+    }
   </style>
 </head>
 <body>
 <button class="back-button" onclick="window.location.href='index.html';">&lt; Back</button>
+
 <div class="login-card" id="admin-login-card">
   <h2>Admin Login</h2>
   <input id="admin-username" placeholder="Admin Username" type="text" />
@@ -154,22 +441,62 @@
 </div>
 
 <!-- Admin Console -->
-<div class="login-card hidden" id="admin-console" style="width: 600px; max-height: 85%; overflow-y: auto;">
-  <h2>Admin Console</h2>
-  <p>Welcome, Admin!</p>
-  <!-- Pending Entries -->
-  <section>
-    <h3 style="text-align: left">Pending Entries</h3>
-    <ul id="pending-list"></ul>
-  </section>
+<div class="admin-container hidden" id="admin-console">
+  <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
+  
+  <div class="admin-header">
+    <h1>Admin Console</h1>
+    <p>Manage and moderate journal entries</p>
+  </div>
 
-  <!-- Approved Entries -->
-  <section style="margin-top: 2rem;">
-    <h3 style="text-align: left">Approved Entries</h3>
-    <ul id="approved-list"></ul>
-  </section>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-number" id="pending-count">0</div>
+      <div class="stat-label">Pending Entries</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" id="approved-count">0</div>
+      <div class="stat-label">Approved Entries</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" id="total-count">0</div>
+      <div class="stat-label">Total Entries</div>
+    </div>
+  </div>
 
-  <button onclick="logoutAdmin()" style="margin-top: 2rem; width:100%;">Logout</button>
+  <div class="admin-content">
+    <!-- Pending Entries -->
+    <div class="section-card">
+      <div class="section-header">
+        📋 Pending Entries
+      </div>
+      <div class="section-content" id="pending-content">
+        <div class="empty-state" id="pending-empty">
+          <svg fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+          </svg>
+          <p>No pending entries</p>
+        </div>
+        <div id="pending-list"></div>
+      </div>
+    </div>
+
+    <!-- Approved Entries -->
+    <div class="section-card">
+      <div class="section-header">
+        ✅ Approved Entries
+      </div>
+      <div class="section-content" id="approved-content">
+        <div class="empty-state" id="approved-empty">
+          <svg fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+          </svg>
+          <p>No approved entries</p>
+        </div>
+        <div id="approved-list"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -232,7 +559,6 @@
     document.getElementById("admin-login-card").classList.remove("hidden");
   }
 
-
   document.getElementById("admin-username").addEventListener("keydown", function(event) {
     if (event.key === "Enter") adminLogin();
   });
@@ -250,8 +576,6 @@
       document.getElementById("admin-console").classList.add("hidden");
     }
   });
-
-
 </script>
 </body>
 </html>
