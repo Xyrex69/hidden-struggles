@@ -7,6 +7,7 @@
   --text: #222;
   --card-bg: #fff;
   --border: #e0d7f3;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -139,8 +140,24 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
 }
+.action-cards li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  position: relative;
+  left: -20px;
+}
+
+.action-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.1);
+}
+
 .playlist-placeholder {
   background: var(--accent);
   color: #fff;
@@ -182,13 +199,13 @@ body {
   gap: 0.7rem;
 }
 
-.journal-wall form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-  margin-bottom: 1rem;
-  align-items: flex-end;
-}
+/*.journal-wall form {*/
+/*  display: flex;*/
+/*  flex-wrap: wrap;*/
+/*  gap: 0.7rem;*/
+/*  margin-bottom: 1rem;*/
+/*  align-items: flex-end;*/
+/*}*/
 #journal-text {
   flex: 2 1 200px;
   border-radius: 8px;
@@ -196,6 +213,9 @@ body {
   padding: 0.7rem;
   font-size: 1rem;
   resize: vertical;
+  max-height: 300px;
+  min-height: 50px;
+  width: 65%;
 }
 #journal-tag {
   flex: 1 1 120px;
@@ -251,11 +271,23 @@ body {
   padding: 0.2rem 0.7rem;
   margin-top: 0.5rem;
 }
+.confirmation {
+  color: #30a800;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
 
 .footer {
   background: var(--primary-dark);
   color: #fff;
-  padding: 2rem 1rem 1rem 1rem;
+  padding: 2rem 1rem 2rem 1rem;
   text-align: center;
   border-radius: 40px 40px 0 0;
   margin-top: 2rem;
@@ -311,5 +343,13 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 600px) {
+  .journal-wall form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 
 /* Indigenous-inspired SVGs (medicine wheel, feather) should be placed in /assets and referenced in .home-bg-pattern */ 
