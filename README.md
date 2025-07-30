@@ -16,7 +16,7 @@ A full-stack website to raise awareness about Indigenous mental health.
 1. `cd backend` and run `npm install`
 2. Set up MongoDB (local or Atlas)
 3. `node server.js` to start the API
-4. Open `frontend/index.html` in your browser
+4. Open `http://localhost:5000/` in your browser
 
 ---
 
